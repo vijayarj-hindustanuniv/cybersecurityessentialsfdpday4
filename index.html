@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cybersecurity Defensive Engineering Lab</title>
+  <style>
+    :root {
+      --ink: #14211d;
+      --muted: #647068;
+      --paper: #f3f5ef;
+      --white: #ffffff;
+      --green: #1d6145;
+      --lime: #b9dc65;
+      --line: #dbe1d7;
+      --amber: #eab85e;
+      --red: #ba5549;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(29, 97, 69, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(29, 97, 69, .045) 1px, transparent 1px),
+        var(--paper);
+      background-size: 32px 32px;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    button, input { font: inherit; }
+
+    .shell { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+    nav {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-family: "Trebuchet MS", sans-serif;
+      font-weight: 800;
+      letter-spacing: .01em;
+    }
+
+    .mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--green);
+      border-radius: 50%;
+      color: var(--green);
+      font-size: 16px;
+    }
+
+    .nav-links { display: flex; gap: 22px; }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 14px;
+    }
+
+    .hero {
+      min-height: 430px;
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      align-items: center;
+      gap: 60px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 18px 0 20px;
+      font-size: clamp(48px, 7vw, 82px);
+      line-height: .94;
+      letter-spacing: -0.045em;
+      font-weight: 700;
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 0;
+      color: var(--muted);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .lab-status {
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.72);
+      box-shadow: 12px 12px 0 var(--lime);
+    }
+
+    .status-head {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .pulse { color: var(--green); }
+
+    .status-list { display: grid; margin-top: 8px; }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      min-height: 52px;
+      border-bottom: 1px solid var(--line);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 13px;
+    }
+
+    .status-row:last-child { border-bottom: 0; }
+    .status-num { color: var(--muted); }
+    .status-ok { color: var(--green); font-weight: 800; }
+
+    section { padding: 82px 0; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      margin: 8px 0 0;
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1;
+      letter-spacing: -0.035em;
+    }
+
+    .section-note {
+      max-width: 360px;
+      color: var(--muted);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: right;
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .project {
+      min-height: 280px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .project:hover, .project.active {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 0 rgba(29,97,69,.10);
+    }
+
+    .project.active { border-top: 4px solid var(--green); }
+
+    .project-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+    }
+
+    .project-no {
+      color: var(--green);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .project-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--paper);
+      color: var(--green);
+      font-family: "Trebuchet MS", sans-serif;
+      font-weight: 800;
+    }
+
+    .project h3 {
+      margin: 38px 0 10px;
+      font-size: 27px;
+    }
+
+    .project p {
+      max-width: 480px;
+      color: var(--muted);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
+
+    .tag {
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      color: var(--green);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .detail-band {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 360px;
+    }
+
+    .tabs {
+      border-right: 1px solid var(--line);
+      padding: 42px 20px 42px 0;
+    }
+
+    .tab {
+      width: 100%;
+      padding: 14px 12px;
+      border: 0;
+      border-left: 3px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .tab.active { border-left-color: var(--lime); color: var(--ink); font-weight: 800; }
+
+    .detail {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+      padding: 42px 0 42px 50px;
+    }
+
+    .detail.active { display: grid; }
+
+    .detail h3 { margin: 8px 0 12px; font-size: 36px; }
+
+    .detail-copy {
+      color: var(--muted);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .matrix {
+      border: 1px solid var(--line);
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    .matrix-row {
+      display: grid;
+      grid-template-columns: 1fr 72px 72px 72px;
+      min-height: 44px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 12px;
+    }
+
+    .matrix-row:last-child { border-bottom: 0; }
+    .matrix-row > * { padding: 10px; }
+    .matrix-head { background: var(--ink); color: white; font-weight: 800; }
+    .yes { color: var(--green); font-weight: 800; }
+
+    .timeline { display: grid; grid-template-columns: repeat(5, 1fr); }
+
+    .stage {
+      position: relative;
+      min-height: 150px;
+      padding: 20px 12px;
+      border-right: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .stage:last-child { border-right: 0; }
+
+    .stage-dot {
+      width: 14px;
+      height: 14px;
+      margin: 0 auto 16px;
+      border: 3px solid var(--paper);
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 1px var(--green);
+    }
+
+    .stage strong {
+      display: block;
+      margin-bottom: 7px;
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 13px;
+    }
+
+    .stage span {
+      color: var(--muted);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 12px;
+    }
+
+    .run-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .code-card {
+      border: 1px solid #1d342a;
+      background: #15251f;
+      color: #dfeadc;
+      overflow: hidden;
+    }
+
+    .code-title {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #31483e;
+      color: #9fb1a6;
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    pre {
+      margin: 0;
+      padding: 22px;
+      overflow-x: auto;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 24px 0 38px;
+      color: var(--muted);
+      font-family: "Trebuchet MS", sans-serif;
+      font-size: 12px;
+    }
+
+    footer .shell { display: flex; justify-content: space-between; }
+
+    @media (max-width: 820px) {
+      .shell { padding: 0 18px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 32px; padding: 54px 0; }
+      .lab-status { max-width: 480px; }
+      .projects, .run-grid { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .section-note { margin-top: 16px; text-align: left; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .tabs { display: grid; grid-template-columns: repeat(4, 1fr); border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 0 0; }
+      .tab { border-left: 0; border-bottom: 3px solid transparent; text-align: center; }
+      .tab.active { border-bottom-color: var(--lime); }
+      .detail { grid-template-columns: 1fr; padding: 32px 0; }
+      .timeline { grid-template-columns: 1fr; }
+      .stage { min-height: 92px; border-right: 0; border-bottom: 1px solid var(--line); }
+      footer .shell { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav aria-label="Main navigation">
+      <div class="brand"><span class="mark">C</span> Defensive Lab</div>
+      <div class="nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#methods">Methods</a>
+        <a href="#run">Run Lab</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div>
+        <div class="eyebrow">Cybersecurity Essentials / FDP Day 4</div>
+        <h1>Defend.<br>Investigate.<br>Respond.</h1>
+        <p>A hands-on engineering lab for understanding access control, evidence integrity, breach detection, and security operations through four focused Python projects.</p>
+      </div>
+      <aside class="lab-status" aria-label="Lab status">
+        <div class="status-head"><span>Lab modules</span><span class="pulse">● Ready</span></div>
+        <div class="status-list">
+          <div class="status-row"><span class="status-num">01</span><span>Access Control</span><span class="status-ok">Start</span></div>
+          <div class="status-row"><span class="status-num">02</span><span>Forensics</span><span class="status-ok">Start</span></div>
+          <div class="status-row"><span class="status-num">03</span><span>Detection</span><span class="status-ok">Build</span></div>
+          <div class="status-row"><span class="status-num">04</span><span>SOC Capstone</span><span class="status-ok">Build</span></div>
+        </div>
+      </aside>
+    </header>
+
+    <main>
+      <section id="projects">
+        <div class="section-head">
+          <div><div class="eyebrow">Four practical modules</div><h2>The lab portfolio</h2></div>
+          <div class="section-note">Each project builds a defensive skill: restricting access, preserving evidence, identifying attack stages, and operating a complete SOC workflow.</div>
+        </div>
+
+        <div class="projects">
+          <article class="project active" data-project="0">
+            <div class="project-top"><span class="project-no">PROJECT 01</span><span class="project-icon">AC</span></div>
+            <h3>RBAC + MAC Engine</h3>
+            <p>Model role-based permissions and security labels, then evaluate whether a user is authorized to perform an action on a protected resource.</p>
+            <div class="tags"><span class="tag">Roles</span><span class="tag">Clearance</span><span class="tag">Authorization</span></div>
+          </article>
+
+          <article class="project" data-project="1">
+            <div class="project-top"><span class="project-no">PROJECT 02</span><span class="project-icon">IR</span></div>
+            <h3>Forensic Timeline Builder</h3>
+            <p>Hash authentication evidence, validate timestamped log records, and convert raw entries into an ordered incident timeline.</p>
+            <div class="tags"><span class="tag">SHA-256</span><span class="tag">Evidence</span><span class="tag">Parsing</span></div>
+          </article>
+
+          <article class="project" data-project="2">
+            <div class="project-top"><span class="project-no">PROJECT 03</span><span class="project-icon">KD</span></div>
+            <h3>Breach Kill-Chain Detector</h3>
+            <p>Map observed behaviors to common breach stages and turn isolated events into a clearer view of attacker progress.</p>
+            <div class="tags"><span class="tag">Kill chain</span><span class="tag">Signals</span><span class="tag">Detection</span></div>
+          </article>
+
+          <article class="project" data-project="3">
+            <div class="project-top"><span class="project-no">PROJECT 04</span><span class="project-icon">SOC</span></div>
+            <h3>SOC Capstone CLI</h3>
+            <p>Combine the lab concepts in a command-line security operations workflow for triage, investigation, escalation, and response.</p>
+            <div class="tags"><span class="tag">Triage</span><span class="tag">Response</span><span class="tag">Automation</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="methods" class="detail-band">
+        <div class="detail-grid">
+          <div class="tabs" role="tablist" aria-label="Project methods">
+            <button class="tab active" data-tab="0">Access control</button>
+            <button class="tab" data-tab="1">Evidence handling</button>
+            <button class="tab" data-tab="2">Attack stages</button>
+            <button class="tab" data-tab="3">SOC workflow</button>
+          </div>
+
+          <div class="detail active" data-detail="0">
+            <div>
+              <div class="eyebrow">Least privilege</div>
+              <h3>Decide who may act</h3>
+              <p class="detail-copy">RBAC supplies permitted actions from a role. MAC supplies a sensitivity label and compares the user's clearance with the resource level. Both checks work together to enforce consistent authorization.</p>
+            </div>
+            <div class="matrix">
+              <div class="matrix-row matrix-head"><div>Resource</div><div>Public</div><div>Secret</div><div>Contain</div></div>
+              <div class="matrix-row"><div>Public notice</div><div class="yes">Read</div><div>—</div><div>—</div></div>
+              <div class="matrix-row"><div>Investigation report</div><div class="yes">Read</div><div>—</div><div>—</div></div>
+              <div class="matrix-row"><div>Incident command</div><div>—</div><div class="yes">Contain</div><div>—</div></div>
+            </div>
+          </div>
+
+          <div class="detail" data-detail="1">
+            <div>
+              <div class="eyebrow">Chain of custody</div>
+              <h3>Preserve and sequence evidence</h3>
+              <p class="detail-copy">A SHA-256 digest records the evidence fingerprint. The parser validates authentication-log structure and timezone-aware timestamps before events are sorted into a chronological forensic timeline.</p>
+            </div>
+            <div class="code-card">
+              <div class="code-title"><span>Evidence process</span><span>01 → 04</span></div>
+              <pre><span style="color:#b9dc65">1.</span> Acquire log
+<span style="color:#b9dc65">2.</span> Calculate SHA-256
+<span style="color:#b9dc65">3.</span> Parse and validate
+<span style="color:#b9dc65">4.</span> Sort by timestamp</pre>
+            </div>
+          </div>
+
+          <div class="detail" data-detail="2">
+            <div>
+              <div class="eyebrow">Detection model</div>
+              <h3>Turn signals into stages</h3>
+              <p class="detail-copy">The detector is designed to correlate activity across the common intrusion lifecycle. It helps analysts distinguish reconnaissance and initial access from execution, persistence, discovery, and exfiltration.</p>
+            </div>
+            <div class="timeline">
+              <div class="stage"><div class="stage-dot"></div><strong>Recon</strong><span>Observe</span></div>
+              <div class="stage"><div class="stage-dot"></div><strong>Access</strong><span>Enter</span></div>
+              <div class="stage"><div class="stage-dot"></div><strong>Execute</strong><span>Operate</span></div>
+              <div class="stage"><div class="stage-dot"></div><strong>Persist</strong><span>Remain</span></div>
+              <div class="stage"><div class="stage-dot"></div><strong>Impact</strong><span>Confirm</span></div>
+            </div>
+          </div>
+
+          <div class="detail" data-detail="3">
+            <div>
+              <div class="eyebrow">Repeatable operations</div>
+              <h3>Move from signal to response</h3>
+              <p class="detail-copy">The capstone CLI serves as the practical entry point for SOC work: ingest findings, prioritize alerts, document observations, coordinate containment, and prepare a consistent handoff.</p>
+            </div>
+            <div class="matrix">
+              <div class="matrix-row matrix-head"><div>Phase</div><div>1</div><div>2</div><div>3</div></div>
+              <div class="matrix-row"><div>Triage</div><div>Alert</div><div>Score</div><div>Route</div></div>
+              <div class="matrix-row"><div>Investigate</div><div>Query</div><div>Correlate</div><div>Verify</div></div>
+              <div class="matrix-row"><div>Respond</div><div>Contain</div><div>Eradicate</div><div>Recover</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="run">
+        <div class="section-head">
+          <div><div class="eyebrow">Workspace guide</div><h2>Run the lab</h2></div>
+          <div class="section-note">The repository is a Python workspace with synthetic data and Python starter files, ready for implementation and experimentation.</div>
+        </div>
+        <div class="run-grid">
+          <div class="code-card">
+            <div class="code-title"><span>Terminal</span><span>Setup</span></div>
+            <pre>python setup_workspace.py
+python -m pip install -r requirements.txt</pre>
+          </div>
+          <div class="code-card">
+            <div class="code-title"><span>Terminal</span><span>Forensics</span></div>
+            <pre>cd project2_ir
+python forensic_timeline_builder.py ../data/synthetic/synthetic_auth.log</pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="shell"><span>Cybersecurity Defensive Engineering Lab</span><span>FDP Day 4 · 2026</span></div>
+    </footer>
+  </div>
+
+  <script>
+    const tabs = [...document.querySelectorAll('.tab')];
+    const details = [...document.querySelectorAll('.detail')];
+    const projects = [...document.querySelectorAll('.project')];
+
+    function activateTab(index) {
+      tabs.forEach((tab, i) => tab.classList.toggle('active', i === index));
+      details.forEach((detail, i) => detail.classList.toggle('active', i === index));
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => activateTab(Number(tab.dataset.tab)));
+    });
+
+    projects.forEach((project) => {
+      project.addEventListener('click', () => {
+        const index = Number(project.dataset.project);
+        projects.forEach((item, i) => item.classList.toggle('active', i === index));
+        activateTab(index);
+        document.querySelector('#methods').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
